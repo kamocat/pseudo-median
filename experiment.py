@@ -1,0 +1,80 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed May 21 17:03:49 2025
+
+@author: Marshal
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import fft, signal as sig
+import random
+
+fs = 1000
+f1,f2 = .1,1
+duration = 5
+t = np.arange(0,duration,1/fs)
+n = t.shape[0]
+noise = np.random.normal(size=n)
+a = sig.chirp(t, f2,duration, f1, method='log')
+b = a + noise
+
+def analyze(t,a,b,c):
+    plt.figure()
+    plt.plot(t,a, label='original')
+    #plt.plot(t,b, 'r,', label='noisy')
+    plt.plot(t,c, label='filtered')
+    plt.legend()
+    
+    plt.figure()
+    freqs = fft.fftfreq(n, 1/fs)[:n//2]
+    x,y,z = [fft.fft(x)[:n//2] for x in [a,b,c]]
+    #plt.plot(freqs, np.abs(y), label="noisy")
+    plt.plot(freqs, np.abs(z), label="filtered")
+    plt.plot(freqs, np.abs(x), label="original")
+    plt.legend()
+    
+    
+    s1 = np.argmin(np.abs(freqs-f1))
+    s2 = np.argmin(np.abs(freqs-f2))
+    phase = np.angle(x) - np.angle(z)
+    delay = np.unwrap(phase) / (2*np.pi*freqs) * fs/mlen
+    plt.figure()
+    plt.plot(freqs[s1:s2], delay[s1:s2])
+
+# %%
+# Brute force solution
+mlen = 128
+c = [np.median(a[i:i+mlen]) for i in range(n)]
+#analyze(t,a,b,c)
+#Group delay should only be 1/2 mlen, but appears to be 1-4x mlen
+
+# %%
+
+def pseudo_median(x, mlen=128):
+    arr = np.linspace(-0.1,0.1,mlen)
+    def pmed(val):
+        nonlocal arr
+        i = np.argmin(np.abs(arr-val))
+        if arr[i] < val:
+            i += 1
+        arr = np.insert(arr, i, val)
+        #if val > random.choice(arr):
+        if i > mlen//2:
+            arr = arr[1:]
+        else:
+            arr = arr[:-1]
+        return arr[mlen//2]
+    
+    return [pmed(v) for v in x]
+
+d = pseudo_median(b)
+#analyze(t,a,b,d)
+
+# %%
+fig, (ax1, ax2) = plt.subplots(2,1, sharex=True)
+plt.title("Comparison of running median")
+ax1.plot(t,b, label='signal with noise')
+ax1.legend()
+[ax2.plot(t,x) for x in [a,c,d]]
+ax2.legend(['original', 'median', 'pseudo-median'])
