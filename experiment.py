@@ -45,7 +45,7 @@ def analyze(t,a,b,c):
 # %%
 # Brute force solution
 mlen = 128
-c = [np.median(a[i:i+mlen]) for i in range(n)]
+c = [np.median(b[i:i+mlen]) for i in range(n)]
 #analyze(t,a,b,c)
 #Group delay should only be 1/2 mlen, but appears to be 1-4x mlen
 
@@ -82,7 +82,7 @@ def compare_noise(amp):
     a = sig.chirp(t, f2,duration, f1, method='log')
     b = a + noise
     mlen = 128
-    c = [np.median(a[i:i+mlen]) for i in range(n)]
+    c = [np.median(b[i:i+mlen]) for i in range(n)]
     d = pseudo_median(b, mlen)
     fig, (ax1, ax2) = plt.subplots(2,1, sharex=True)
     plt.title("Comparison of running median")

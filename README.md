@@ -16,5 +16,3 @@ It's more like 100ms with the noise at 1/2 the signal amplitude:
 And with the noise almost obscuring the signal, the lead is around 200ms, which is greater than the window length.
 ![Noise at 1x the signal amplitude](images/noise_1.0.png)
 
-You might well wonder why anyone would want a new median filter when the classic approach removes the noise perfectly.
-This is the trouble with simulation. I will see about collecting some real data to test.
