@@ -1,0 +1,3 @@
+slow_sample and fast_sample are two timeseries from the same source, except that slow_sample has a sample period of 1 second and fast_sample has a period of about 60 seconds,
+The data is collected using the built-in ADC on an ESP32, measuring water level from a custom analog sensor. See (bubbler)[https://github.com/kamocat/bubbler]
+Because the ESP32 has a particularly bad ADC with noise and missing codes, each sample here is the average of 256 actual ADC readings at a rate of 20kHz (the minimum I could configure), and further filtered with a simple IIR low-pass filter. See (esp-sensor)[https://github.com/kamocat/esp32_sensor] for details.
