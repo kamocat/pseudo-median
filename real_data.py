@@ -20,7 +20,7 @@ n = b.shape[0]
 
 # Brute force solution
 def classic_median(x, mlen=128):
-    return [np.median(b[i:i+mlen]) for i in range(n)]
+    return [np.median(b[max(i-mlen, 0):i+1]) for i in range(n)]
 
 def pseudo_median(x, mlen=128):
     arr = np.linspace(0,2,mlen)
@@ -47,7 +47,7 @@ d = pseudo_median(b, mlen)
 
 # %%
 
-plt.plot(b, 'k.', label='noisy', markersize=1)
-plt.plot(c, label='median')
-plt.plot(d, label='pseudo-median')
+plt.plot(b[mlen:], 'k.', label='noisy', markersize=1)
+plt.plot(c[mlen:], label='median')
+plt.plot(d[mlen:], label='pseudo-median')
 plt.legend()

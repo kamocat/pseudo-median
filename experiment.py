@@ -46,8 +46,8 @@ def analyze(t,a,b,c):
 
 # %%
 # Brute force solution
-def classic_median(x, mlen=128)
-    return [np.median(b[i:i+mlen]) for i in range(n)]
+def classic_median(x, mlen=128):
+    return [np.median(b[max(i-mlen,0):i+1]) for i in range(n)]
 
 # %%
 
@@ -79,13 +79,13 @@ def compare_noise(amp):
     a = sig.chirp(t, f2,duration, f1, method='log')
     b = a + noise
     mlen = 128
-    c = [np.median(b[i:i+mlen]) for i in range(n)]
+    c = classic_median(b, mlen)
     d = pseudo_median(b, mlen)
     fig, (ax1, ax2) = plt.subplots(2,1, sharex=True)
     plt.title("Comparison of running median")
     ax1.plot(t,b, label='signal with noise')
     ax1.legend()
-    [ax2.plot(t,x) for x in [a,c,d]]
+    [ax2.plot(t[mlen:],x[mlen:]) for x in [a,c,d]]
     ax2.legend(['original', 'median', 'pseudo-median'])
     plt.savefig(f'noise_{amp:0.1f}.png')
 
