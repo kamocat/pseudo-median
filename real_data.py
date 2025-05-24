@@ -11,16 +11,9 @@ import numpy as np
 from scipy import fft, signal as sig
 import matplotlib.pyplot as plt
 
-a = pd.read_csv('data/slow_sample.csv')
-b = pd.to_numeric(a['state'], errors='coerce').dropna()
-n = b.shape[0]
-
-#y = np.abs(fft.fft(b)[:n//2])
-#plt.loglog(y)
-
 # Brute force solution
 def classic_median(x, mlen=128):
-    return [np.median(b[max(i-mlen, 0):i+1]) for i in range(n)]
+    return [np.median(x[max(i-mlen, 0):i+1]) for i in range(n)]
 
 def pseudo_median(x, mlen=128):
     arr = np.linspace(0,2,mlen)
@@ -41,13 +34,35 @@ def pseudo_median(x, mlen=128):
 
 # %%
 
+a = pd.read_csv('data/fast_sample.csv')
+b = pd.to_numeric(a['state'], errors='coerce').dropna()
+n = b.shape[0]
+
 mlen = 128
 c = classic_median(b, mlen)
 d = pseudo_median(b, mlen)
 
+plt.plot(b, 'k,', label='noisy', markersize=1)
+plt.plot(c, label='median')
+plt.plot(d, label='pseudo-median')
+plt.xlim(mlen, n)
+plt.ylim(0.2, 0.7)
+plt.legend()
+plt.savefig('images/fast_sample.png')
+
 # %%
 
-plt.plot(b[mlen:], 'k.', label='noisy', markersize=1)
-plt.plot(c[mlen:], label='median')
-plt.plot(d[mlen:], label='pseudo-median')
+a = pd.read_csv('data/slow_sample.csv')
+b = pd.to_numeric(a['state'], errors='coerce').dropna()
+n = b.shape[0]
+
+mlen = 128
+c = classic_median(b, mlen)
+d = pseudo_median(b, mlen)
+
+plt.plot(b, 'k.', label='noisy', markersize=1)
+plt.plot(c, label='median')
+plt.plot(d, label='pseudo-median')
+plt.xlim(mlen, n)
 plt.legend()
+plt.savefig('images/slow_sample.png')

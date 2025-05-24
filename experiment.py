@@ -47,7 +47,7 @@ def analyze(t,a,b,c):
 # %%
 # Brute force solution
 def classic_median(x, mlen=128):
-    return [np.median(b[max(i-mlen,0):i+1]) for i in range(n)]
+    return [np.median(x[max(i-mlen,0):i+1]) for i in range(n)]
 
 # %%
 
@@ -87,6 +87,6 @@ def compare_noise(amp):
     ax1.legend()
     [ax2.plot(t[mlen:],x[mlen:]) for x in [a,c,d]]
     ax2.legend(['original', 'median', 'pseudo-median'])
-    plt.savefig(f'noise_{amp:0.1f}.png')
+    plt.savefig(f'images/noise_{amp:0.1f}.png')
 
 [compare_noise(x) for x in [1,0.5,0.1]]
