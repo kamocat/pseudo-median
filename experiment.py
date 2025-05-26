@@ -81,12 +81,17 @@ def compare_noise(amp):
     mlen = 128
     c = classic_median(b, mlen)
     d = pseudo_median(b, mlen)
+    w = np.sinc(np.linspace(-1, 1, mlen))
+    w /= np.sum(w)
+    e = np.convolve(a, w, mode='full')[:n]
     fig, (ax1, ax2) = plt.subplots(2,1, sharex=True)
     plt.title("Comparison of running median")
     ax1.plot(t,b, label='signal with noise')
     ax1.legend()
-    [ax2.plot(t[mlen:],x[mlen:]) for x in [a,c,d]]
-    ax2.legend(['original', 'median', 'pseudo-median'])
+    [ax2.plot(t,x) for x in [a,c,d]]
+    ax2.plot(t,e, 'r--')
+    ax2.legend(['original', 'median', 'pseudo-median', 'sinc'], loc='lower right')
+    ax2.set_ylim(-1.1,1.1)
     plt.savefig(f'images/noise_{amp:0.1f}.png')
 
 [compare_noise(x) for x in [1,0.5,0.1]]

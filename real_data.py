@@ -32,6 +32,13 @@ def pseudo_median(x, mlen=128):
 
     return [pmed(v) for v in x]
 
+def fir_sinc(x, wlen):
+    w = w = np.sinc(np.linspace(-1, 1, wlen))
+    w /= np.sum(w)
+    y = np.convolve(x, w, mode='full')
+    n = max(x.shape)
+    return y[:n]
+
 # %%
 
 a = pd.read_csv('data/fast_sample.csv')
@@ -41,7 +48,7 @@ n = b.shape[0]
 mlen = 128
 c = classic_median(b, mlen)
 d = pseudo_median(b, mlen)
-
+plt.figure()
 plt.plot(b, 'k,', label='noisy', markersize=1)
 plt.plot(c, label='median')
 plt.plot(d, label='pseudo-median')
@@ -59,10 +66,13 @@ n = b.shape[0]
 mlen = 128
 c = classic_median(b, mlen)
 d = pseudo_median(b, mlen)
-
+e = fir_sinc(b, mlen)
+plt.figure()
 plt.plot(b, 'k.', label='noisy', markersize=1)
 plt.plot(c, label='median')
 plt.plot(d, label='pseudo-median')
+plt.plot(e, 'g--', label='sinc')
 plt.xlim(mlen, n)
+plt.ylim(0.9, 1.4)
 plt.legend()
 plt.savefig('images/slow_sample.png')
